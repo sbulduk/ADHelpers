@@ -1,0 +1,31 @@
+# Create credentials
+$username="taslogwinserver\Administrator"
+$password=ConvertTo-SecureString "Sbulduk2023!" -AsPlainText -Force
+$credential=New-Object System.Management.Automation.PSCredential($username,$password)
+
+# Initialize RemoteHelper
+$remoteHelper=[RemoteHelper]::new("DC01.taslogwinserver.local",$credential)
+
+# Test connection
+if ($remoteHelper.TestConnection()) {
+    Write-Output "Connected to remote server."
+}else{
+    Write-Output "Connection failed."
+}
+
+# Run a script block
+$result=$remoteHelper.InvokeRemoteScript({
+    Get-ADUser -Filter * | Select-Object -First 5
+})
+Write-Output "Users: $result"
+
+# Run a local script file remotely
+$remoteHelper.RunScriptFile("C:\Scripts\UserScripts.ps1")
+
+# Call a class method remotely
+$methodResult=$remoteHelper.RunMethod("UserScripts","AddNewUser",@{
+    firstName="John"
+    lastName="Doe"
+    OUPath="OU=Users,DC=example,DC=com"
+})
+Write-Output "Method result: $methodResult"
