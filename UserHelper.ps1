@@ -22,15 +22,10 @@ class UserHelper{
         return ($user -ne "")
     }
 
-    # [string] GetUserByIdentity([string]$identity){
-    #     $user=Get-ADUser -Filter "SamAccountName -eq '$identity'" -SearchBase $this.specifiedOUPath -Properties * -ErrorAction SilentlyContinue
-    #     if($user){return ConvertTo-Json $user}
-    #     return ""
-    # }
-
     [string] GetUserByIdentity([string]$identity){
         $user=Get-ADUser -Filter "SamAccountName -eq '$identity'" -SearchBase $this.specifiedOUPath -Properties * -ErrorAction SilentlyContinue
-        return $user | ConvertTo-Json -Depth 3
+        if($user){return ConvertTo-Json $user}
+        return ""
     }
 
     # [string] GetUsersByGroup([string]$groupName){

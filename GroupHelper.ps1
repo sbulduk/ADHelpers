@@ -19,22 +19,17 @@ class GroupHelper{
         return ($group -ne "")
     }
     
-    # [string] GetGroupByIdentity([string]$identity){
-    #     $group=Get-ADGroup -Filter * -SearchBase $this.specifiedOUPath -Properties * | Where-Object{$_.SamAccountName -eq $identity}
-    #     if($null -eq $group){return ""}
-    
-    #     if($group.Count -gt 1){
-    #         return ConvertTo-Json([PSCustomObject]@{
-    #             group=$group[0]
-    #             message="Multiple groups found with the given idendtity.`nPlease specify a search path."
-    #         })
-    #     }
-    #     return ConvertTo-Json $group
-    # }
-
     [string] GetGroupByIdentity([string]$identity){
-        $group=Get-ADGroup -Filter "SamAccountName -eq '$identity'" -SearchBase $this.specifiedOUPath -Properties *
-        return $group | ConvertTo-Json -Depth 3 
+        $group=Get-ADGroup -Filter * -SearchBase $this.specifiedOUPath -Properties * | Where-Object{$_.SamAccountName -eq $identity}
+        if($null -eq $group){return ""}
+    
+        if($group.Count -gt 1){
+            return ConvertTo-Json([PSCustomObject]@{
+                group=$group[0]
+                message="Multiple groups found with the given idendtity.`nPlease specify a search path."
+            })
+        }
+        return ConvertTo-Json $group
     }
     
     # [string] GetGroupsByUser([string]$userName){
