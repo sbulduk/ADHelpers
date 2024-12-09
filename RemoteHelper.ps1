@@ -46,14 +46,19 @@ class RemoteHelper{
 
     [psobject] RunMethod([string]$className,[string]$methodName,[hashtable]$params=@{}){
         $scriptBlock={
-            param ($className,$methodName,$params)
+            param (
+                [string]$className,
+                [string]$methodName,
+                [hashtable]$params
+            )
             Import-Module ActiveDirectory -ErrorAction SilentlyContinue
             $instance=New-Object -TypeName $className
             $method=$instance.PSObject.Methods[$methodName]
             if($null -eq $method){
                 throw "Method '$methodName' does not exist in class '$className'."
             }
-            return $method.Invoke($params.Values)
+            $result=$method.Invoke($params.Values)
+            return $result
         }
 
         return $this.InvokeRemoteScript($scriptBlock,@{
