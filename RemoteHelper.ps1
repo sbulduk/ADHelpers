@@ -7,6 +7,11 @@ class RemoteHelper{
         $this.credential=$credential
     }
 
+    RemoteHelper([string]$remoteServer,[string]$userName,[string]$password){
+        $this.remoteServer=$remoteServer
+        $this.credential=New-Object System.Management.Automation.PSCredential($userName,(ConvertTo-SecureString -String($password) -AsPlainText -Force))
+    }
+
     [bool] TestConnection(){
         try{
             Test-NetConnection -ComputerName $this.remoteServer -Port 445
