@@ -8,12 +8,14 @@ class ComputerHelper{
     }
 
     [bool] CheckComputerExists([string]$computerName){
-        $computer=Get-ADComputer -Filter "Name -eq '$computerName'" -SearchBase $this.specifiedOUPath -ErrorAction SilentlyContinue
-        return ($null -ne $computer)
+        if([string]::IsNullOrWhiteSpace($computerName)){return $false}
+        $computer=Get-ADComputer -Filter "Name -eq '$computerName'" -Properties * -ErrorAction SilentlyContinue
+        return ($false -ne $computer)
     }
 
     [string] GetComputerByName([string]$computerName){
-        $computer=Get-ADComputer -Filter "Name -eq '$computerName'" -Properties *
+        $computer=$this.CheckComputerExists($computerName)
+        # $computer=Get-ADComputer -Filter "Name -eq '$computerName'" -Properties *
         return $computer | ConvertTo-Json -Depth 3
     }
 
@@ -23,7 +25,7 @@ class ComputerHelper{
         return $computers.Name | ConvertTo-Json
     }
 
-    [string] AddNewComputer([string]$computerName,[string]$processOUPath) {
+    [string] AddNewComputer([string]$computerName,[string]$processOUPath){
         $OUPath=if($processOUPath -ne ""){$processOUPath}else{$this.specifiedOUPath}
         if (-not $this.CheckComputerExists($computerName)) {
             New-ADComputer -Name $computerName -Path $OUPath -Enabled $true
