@@ -17,6 +17,13 @@ class OUHelper{
         return $OU | ConvertTo-Json -Depth 3
     }
 
+    [string] GetOUHierarch([string]$processOUPath){
+        $OUPath=if($processOUPath -eq ""){$this.specifiedDomain}else{$this.$processOUPath}
+        if(-not $this.CheckOUExists($OUPath)){return ""}
+        $hierarchy=Get-ADOrganizationalUnit -Filter * -SearchBase $OUPath
+        return $hierarchy | ConvertTo-Json -Depth 3
+    }
+
     [string] ListOUs([string]$processOUPath){
         $OUPath=if($processOUPath -ne ""){$processOUPath}else{$this.specifiedDomain}
         $OUs=Get-ADOrganizationalUnit -Filter * -SearchBase $OUPath

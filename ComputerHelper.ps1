@@ -27,7 +27,7 @@ class ComputerHelper{
 
     [string] AddNewComputer([string]$computerName,[string]$processOUPath){
         $OUPath=if($processOUPath -ne ""){$processOUPath}else{$this.specifiedOUPath}
-        if (-not $this.CheckComputerExists($computerName)) {
+        if (-not $this.CheckComputerExists($computerName)){
             New-ADComputer -Name $computerName -Path $OUPath -Enabled $true
             return $computerName
         }
@@ -42,16 +42,16 @@ class ComputerHelper{
         return ""
     }
 
-    [string] MoveComputer([string]$computerName,[string]$destinationOUPath) {
-        if ($this.CheckComputerExists($computerName)) {
+    [string] MoveComputer([string]$computerName,[string]$destinationOUPath){
+        if ($this.CheckComputerExists($computerName)){
             Move-ADObject -Identity (Get-ADComputer -Filter "Name -eq '$computerName'").DistinguishedName -TargetPath $destinationOUPath
             return $computerName
         }
         return ""
     }
 
-    [string] ResetComputerAccount([string]$computerName) {
-        if ($this.CheckComputerExists($computerName)) {
+    [string] ResetComputerAccount([string]$computerName){
+        if ($this.CheckComputerExists($computerName)){
             Reset-ComputerMachinePassword -ComputerName $computerName
             return $computerName
         }

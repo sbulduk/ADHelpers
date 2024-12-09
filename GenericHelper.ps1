@@ -11,4 +11,9 @@
         $private:ofs=""
         return [string]$characters[$random]
     }
+
+    static [string] ValidateEmailAddress([string]$emailAddress){
+        if([string]::IsNullOrWhiteSpace($emailAddress)){return ""}
+        return $emailAddress -match "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    }
 }

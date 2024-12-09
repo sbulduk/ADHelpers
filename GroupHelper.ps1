@@ -48,6 +48,14 @@ class GroupHelper{
         $groups=$user.MemberOf | ForEach-Object {(Get-ADGroup -Identity $_).Name}
         return $groups | ConvertTo-Json
     }
+
+    [string] GetUsersByGroup([string]$groupName){
+        if($this.CheckGroupExists($groupName)){
+            $memberList=Get-ADGroup -Filter "SamAccountName -eq '$groupName'" -Properties Member | Select-Object -ExpandProperty Member
+            return $memberList | ConvertTo-Json
+        }
+        return ""
+    }
     
     # [string] AddNewGroup([string]$groupName,[string]$samAccountName,[string]$groupCategory,[string]$groupScope,[string]$processOUPath){
     #     $OUPath=if($processOUPath -ne ""){$processOUPath}
