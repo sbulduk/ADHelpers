@@ -1,6 +1,7 @@
 ﻿Import-Module ActiveDirectory
 # Set-Location -Path .
 # Import-Module .\GenericHelper.ps1
+. .\GroupHelper.ps1
 
 class UserHelper{
     [string]$specifiedOUPath

@@ -9,7 +9,8 @@ class RemoteHelper{
 
     [bool] TestConnection(){
         try{
-            Test-Connection -ComputerName $this.remoteServer -Count 1 -Quiet -Credential $this.credential
+            Test-NetConnection -ComputerName $this.remoteServer -Port 445
+            # Test-Connection -ComputerName $this.remoteServer -Count 1 -Quiet -Credential $this.credential
             return $true
         }catch{
             Write-Error "Connection test failed: $($_.Exception.Message)"
@@ -28,20 +29,14 @@ class RemoteHelper{
     }
 
     [string] RunScriptFile([string]$filePath,[hashtable]$params=@{}){
-        Write-Output "A"
         if($null -eq (Test-Path $filePath)){throw "The script file '$filePath' does not exist!"}
-        Write-Output "B"
 
         try{
-            Write-Output "C"
             $scriptContent=Get-Content -Path $filePath -Raw
-            Write-Output "D"
             $scriptBlock=[scriptblock]::Create($scriptContent)
-            Write-Output "E"
             return $this.InvokeRemoteScript($scriptBlock,$params)
-        }catch{
-            Write-Output "F"
-            return $null}
+        }
+        catch{return $null}
     }
 
     [psobject] RunMethod([string]$className,[string]$methodName,[hashtable]$params=@{}){
